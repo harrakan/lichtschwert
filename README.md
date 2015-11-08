@@ -1,2 +1,2 @@
-# lichtschwert
-AVR-Lichtschwert
+# nachtlicht
+AVR-Nachtlicht
