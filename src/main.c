@@ -3,12 +3,9 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdint.h>
-#include <math.h>
-
-
-#define M_PI_3   1.0471975512 /* pi/3 */
 
 #define  STRIPLENGTH     50
+#include "rgb_conversion.h"
 #include "light_ws2812.h"
 #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
 
@@ -107,45 +104,6 @@ void initADC()
     (0 << ADPS0);      // set prescaler to 64, bit 0  
 }
 
-int calcP(float H, float S, float I)  {
-    return 255 * I / 3 * (1 + S * cos(H) / cos(M_PI_3 - H));
-}
-
-int calcQ(float H, float S, float I) {
-    return 255 * I / 3 * (1 + S * (1 - cos(H) / cos(M_PI_3 - H)));
-}
-
-int calcT(float H, float S, float I) {
-    return 255 * I / 3 * (1 - S);
-}
-
-struct cRGB hsi2rgb(float H, float S, float I) {
-    struct cRGB rgb;
-    
-    H = fmod(H, 360); // cycle H around to 0-360 degrees
-    H = M_PI * H / (float)180; // Convert to radians.
-    S = constrain(S, 0, 1);
-    I = constrain(I, 0, 1);
-    
-    
-    if (H < 2 * M_PI_3) {
-        rgb.r = calcP(H, S, I);
-        rgb.g= calcQ(H, S, I);
-        rgb.b = calcT(H, S, I);
-    } else if (H < 4 * M_PI_3) {
-        H = H - 2 * M_PI_3;
-        rgb.g = calcP(H, S, I);
-        rgb.b = calcQ(H, S, I);
-        rgb.r = calcT(H, S, I);
-    } else {
-        H = H - 4 * M_PI_3;
-        rgb.b = calcP(H, S, I);
-        rgb.r = calcQ(H, S, I);
-        rgb.g = calcT(H, S, I);
-    }
-    
-    return rgb;
-}
 
 /* ADC Einzelmessung */
 uint16_t ADC_Read( uint8_t channel )
@@ -185,7 +143,7 @@ uint16_t analogRead(int8_t channel)
 
 int main ()
 {
-    struct cRGB  color;
+    uint32_t color;
     init() ;
     initWS2812 ();  
     initADC();
@@ -199,7 +157,7 @@ int main ()
         int to = round((analogRead(ADC3PIN) / 1023.0) * STRIPLENGTH);
         //int to = 60;
         color = hsi2rgb(hue, saturation, intensity);
-        setColor(color, 0, to, 255);
+        //setColor(color, 0, to, 255);
         _delay_ms(100);
         
     }
