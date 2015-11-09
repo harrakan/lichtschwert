@@ -6,7 +6,6 @@
 #include <stdint.h>
 
 #include "light_ws2812.h"
-#include "rgb_conversion.h"
 #include "tiny85io.h"
 #include "strip_ws2812.h"
 
@@ -16,13 +15,16 @@
 #define  ADC3PIN          3    // Analog pin 3(digital pin #3)
 
 
+struct cRGB black = {0,0,0};    
+struct cRGB red = {0,255,0};  
+struct cRGB white = {255,255,255};
 
 void initWS2812 ()
 {
     /* define Pin as configured in ws2812_config.h as LEDstrip Pin 
-    DDRB|=_BV(ws2812_pin);*/
+     *   DDRB|=_BV(ws2812_pin);*/
     setStrip(STRIPPIN, 50);
-    setStripColor(0,0);
+    setStripColor(black,0);
     
 }
 
@@ -38,19 +40,22 @@ void init()
 
 
 int main ()
-{     
+{    
+    float hue,saturation,intensity;
+    uint8_t to; 
     init() ;
+    
     
     for (;;)
     {        
-        float hue = 180 + (analogRead(ADC1PIN) / 1023.0) * 360;
-        float saturation = analogRead(ADC2PIN) / 1023.0;
-        float intensity =  1; //analogRead(ADC2Pin)/1023.0;
-        int to = round((analogRead(ADC3PIN) / 1023.0) * getStripLength());
-        //int to = 60;
+        hue = 180 + (analogRead(ADC1PIN) / 1023.0) * 360;
+        saturation = analogRead(ADC2PIN) / 1023.0;
+        intensity =  1; //analogRead(ADC2Pin)/1023.0;
+        to = round((analogRead(ADC3PIN) / 1023.0) * getStripLength());
         
-        uint32_t color = hsi2rgb(hue, saturation, intensity);
-        setColor(color, 0, to, 255);
-        _delay_ms(100);        
+        struct cRGB color = hsi2rgb(hue, saturation, intensity);
+        setColor(color, 0, to, 255);    
+        _delay_ms(100);     
+        
     }
 }

@@ -20,7 +20,7 @@ CFLAGS+= -g2 -I. -mmcu=$(DEVICE) -DF_CPU=$(F_CPU)
 CFLAGS+= -Os -ffunction-sections -fdata-sections -fpack-struct -fno-move-loop-invariants -fno-tree-scev-cprop -fno-inline-small-functions  
 CFLAGS+= -Wall -Wno-pointer-to-int-cast -std=gnu99
 
-_OBJ = light_ws2812.o rgb_conversion.o tiny85io.o strip_ws2812.o
+_OBJ = light_ws2812.o tiny85io.o strip_ws2812.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 #Targets
