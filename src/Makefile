@@ -8,22 +8,19 @@ CC = avr-gcc
 AVRDUDE=/usr/local/bin/avrdude
 GPIO=gpio -g
 
-
 #Variables
 TARGET=lichtschwert
 
 IDIR =../include
+ODIR=../obj
+BDIR =../bin
 
 CFLAGS =-I$(IDIR)
 CFLAGS+= -g2 -I. -mmcu=$(DEVICE) -DF_CPU=$(F_CPU) 
 CFLAGS+= -Os -ffunction-sections -fdata-sections -fpack-struct -fno-move-loop-invariants -fno-tree-scev-cprop -fno-inline-small-functions  
 CFLAGS+= -Wall -Wno-pointer-to-int-cast -std=gnu99
 
-ODIR=../obj
-BDIR =../bin
-
-
-_OBJ = light_ws2812.o rgb_conversion.o
+_OBJ = light_ws2812.o rgb_conversion.o tiny85io.o strip_ws2812.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 #Targets
@@ -44,7 +41,7 @@ $(ODIR)/%.o:$(IDIR)/%.c
 clean:
 	rm -f $(ODIR)/*.o $(ODIR)/*.lss $(BDIR)/*.hex
 
-program : lichtschwert
+program : $(TARGET)
 	$(GPIO) mode 22 out
 	$(GPIO) write 22 0
 	$(AVRDUDE) -p $(AVRDUDEMCU) -P /dev/spidev0.0 -c linuxspi -b 20000 -U flash:w:$(BDIR)/$(TARGET).hex
