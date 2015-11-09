@@ -22,26 +22,23 @@ CFLAGS+= -Wall -Wno-pointer-to-int-cast -std=gnu99
 ODIR=../obj
 BDIR =../bin
 
-_DEPS = light_ws2812.h rgb_conversion.c
-DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 _OBJ = light_ws2812.o rgb_conversion.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 #Targets
-$(ODIR)/%.o: %.c $(DEPS)
-	@echo Building $@
-	$(CC) -c -o $@ $< $(CFLAGS)
 
-lichtschwert: $(OBJ)
+	
+$(TARGET): $(OBJ)
 	@echo Building $@
-	#$(CC) $(CFLAGS) -o $(ODIR)/$@.o #main.c #../include/light_ws2812.c ../include/rgb_conversion.c
-	$(CC) -o $@ $^ $(CFLAGS)
+	$(CC) -o $(ODIR)/$@.o $^ $(CFLAGS) main.c
 	@avr-size $(ODIR)/$@.o
 	@avr-objcopy -j .text  -j .data -O ihex $(ODIR)/$@.o $(BDIR)/$@.hex
 	@avr-objdump -d -S $(ODIR)/$@.o > $(ODIR)/$@.lss
 
-
+$(ODIR)/%.o:$(IDIR)/%.c 
+	$(CC) -c -o $@ $< $(CFLAGS)
+	
 .PHONY: clean
 
 clean:

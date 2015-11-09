@@ -1,9 +1,10 @@
 
-#ifndef LIGHT_WS2812_H_
-#define LIGHT_WS2812_H_
+#ifndef RGB_CONVERSION_H_
+#define RGB_CONVERSION_H_
 
+#include <stdint.h>
 
 uint32_t hsi2rgb(float H, float S, float I);
 
 
-#endif /* LIGHT_WS2812_H_ */
+#endif /* RGB_CONVERSION_H_ */

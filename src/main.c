@@ -1,19 +1,17 @@
 #define F_CPU 8000000L
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdint.h>
 
-#define  STRIPLENGTH     50
-#include "rgb_conversion.h"
 #include "light_ws2812.h"
-#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+#include "rgb_conversion.h"
 
-
+#define  STRIPLENGTH     50
 #define  ADC1PIN          1    // Analog pin 1(digital pin #2)
 #define  ADC2PIN          2    // Analog pin 2(digital pin #4)
 #define  ADC3PIN          3    // Analog pin 3(digital pin #3)
-
 
 
 struct cRGB black = {0,0,0};    
@@ -51,7 +49,7 @@ void initWS2812 ()
     /* define Pin as configured in ws2812_config.h as LEDstrip Pin */
     DDRB|=_BV(ws2812_pin);
     
-    setColor(black ,0,STRIPLENGTH,0);
+     setColor(black ,0,STRIPLENGTH,0);
     
 }
 
@@ -156,6 +154,7 @@ int main ()
         float intensity =  1; //analogRead(ADC2Pin)/1023.0;
         int to = round((analogRead(ADC3PIN) / 1023.0) * STRIPLENGTH);
         //int to = 60;
+        
         color = hsi2rgb(hue, saturation, intensity);
         //setColor(color, 0, to, 255);
         _delay_ms(100);
