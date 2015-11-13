@@ -1,3 +1,5 @@
+
+
 #include "strip_ws2812.h"
 //#include "light_ws2812.h"
 #include <avr/io.h>
@@ -21,40 +23,6 @@ void setStrip(uint8_t pin, uint8_t led_count)
     DDRB|=_BV(ws2812_pin);
 }
 
-/*
-void setColor(uint32_t color, int from, int to, uint8_t brightness) 
-{
-    uint8_t r,b,g;
-    
-    r = (uint8_t)(color >> 16);
-    g = (uint8_t)(color >>  8);
-    b = (uint8_t) color;
-    
-    struct cRGB led[strip.led_count];
-    
-    for (int i = 0; i <= strip.led_count; i++) {
-        if ( i >= from &&  i < to )
-        {
-            led[i].r= g;
-            led[i].g= r ;
-            /*
-             * original colors; depends on LEDs
-             *           led[i].r=r * brightness/255;
-             *           led[i].g=g * brightness/255;
-             * /
-            led[i].b= b;             
-        }
-        else
-        {
-            led[i].r=0;
-            led[i].g=0;
-            led[i].b=0;  
-        }
-    }
-    ws2812_setleds(led,strip.led_count);
-}*/
-
-
 void setColor(struct cRGB color, int from, int to, unsigned char brightness) 
 {
     struct cRGB led[strip.led_count];
@@ -62,9 +30,9 @@ void setColor(struct cRGB color, int from, int to, unsigned char brightness)
     for (int i = 0; i <= strip.led_count; i++) {
         if ( i >= from &&  i < to )
         {
-            led[i].r=color.g ;
-            led[i].g=color.r ;
-            led[i].b=color.b ;  
+            led[i].r=brightness/255.0 * color.g ;
+            led[i].g=brightness/255.0 * color.r ;
+            led[i].b=brightness/255.0 * color.b ;  
         }
         else
         {
