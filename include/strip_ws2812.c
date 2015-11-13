@@ -1,5 +1,3 @@
-
-
 #include "strip_ws2812.h"
 //#include "light_ws2812.h"
 #include <avr/io.h>
