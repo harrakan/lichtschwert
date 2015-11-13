@@ -1,6 +1,99 @@
 
 #include <avr/io.h>
+#include <util/delay.h>
 #include "tiny85io.h"
+
+
+#define HIGH 0x1
+#define LOW  0x0
+
+#define INPUT 0x0
+#define OUTPUT 0x1
+#define INPUT_PULLUP 0x2
+
+#define BUTTON_PORT PORTB       /* PORTx - register for button output */
+#define BUTTON_PIN PINB         /* PINx - register for button input */
+#define BUTTON_BIT PB4          /* bit for button input/output */
+
+#define DEBOUNCE_TIME 25        /* time to wait while "de-bouncing" button */
+#define LOCK_INPUT_TIME 250     /* time to wait after a button press */
+
+
+void pinMode(uint8_t pin, uint8_t mode)
+{                 
+	if (mode == INPUT) { 
+                DDRB &= ~(1 << pin); //set port to input
+                
+	} else if (mode == INPUT_PULLUP) {
+                DDRB &= ~(1 << pin); //set port to input
+                PORTB |=(1<<pin); /* turn on internal pull-up resistor */
+		
+	} else {
+            
+                DDRB |= (1 << pin); //set port to output
+	}
+}
+
+
+/*
+void pinMode(uint8_t pin, uint8_t mode)
+{
+        uint8_t  portmapping [6] = {PB0,PB1,PB2,PB3,PB4,PB5};    
+      
+        
+	if (mode == INPUT) { 
+		
+	} else if (mode == INPUT_PULLUP) {
+                PORTB=(1<<portmapping[pin]);
+		
+	} else {
+            
+                DDRB |= (1 << DDB0);
+                PORTB=(1<<portmapping[pin]);
+		
+	}
+	
+    
+}*/
+
+
+int digitalRead(uint8_t pin)
+{
+      
+    /* the button is pressed when BUTTON_BIT is clear */
+    if (bit_is_clear(PINB, pin))
+    {
+        _delay_ms(DEBOUNCE_TIME);
+        if (bit_is_clear(PINB, pin)) return HIGH;
+    }
+    
+    return LOW;
+}
+
+
+void digitalWrite(uint8_t pin, uint8_t val)
+{
+    if (val == LOW )
+    {
+        PORTB &= ~(1<<pin); // löscht Bit  in PORTB
+    }
+    PORTB |= (1<<pin); // setzt Bit  in PORTB
+}
+
+int button_is_pressed()
+{
+    
+    /* the button is pressed when BUTTON_BIT is clear */
+    if (bit_is_clear(BUTTON_PIN, BUTTON_BIT))
+    {
+        //_delay_ms(DEBOUNCE_TIME);
+        if (bit_is_clear(BUTTON_PIN, BUTTON_BIT)) return 1;
+    }
+    
+    return 0;
+}
+
+
 
 void initADC(void)
 {
@@ -80,26 +173,3 @@ uint16_t analogRead(int8_t channel)
     return ADC_Read(channel);
 }
 
-
-#define BUTTON_PORT PORTB       /* PORTx - register for button output */
-#define BUTTON_PIN PINB         /* PINx - register for button input */
-#define BUTTON_BIT PB4          /* bit for button input/output */
-
-#define DEBOUNCE_TIME 25        /* time to wait while "de-bouncing" button */
-#define LOCK_INPUT_TIME 250     /* time to wait after a button press */
-
-int button_is_pressed()
-{
-    
-    /* turn on internal pull-up resistor for the switch */
-   // BUTTON_PORT |= _BV(BUTTON_BIT);
-    
-    /* the button is pressed when BUTTON_BIT is clear */
-    if (bit_is_clear(BUTTON_PIN, BUTTON_BIT))
-    {
-        //_delay_ms(DEBOUNCE_TIME);
-        if (bit_is_clear(BUTTON_PIN, BUTTON_BIT)) return 1;
-    }
-    
-    return 0;
-}
