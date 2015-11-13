@@ -13,18 +13,16 @@
 #define  ADC1PIN          1    // Analog pin 1(digital pin #2)
 #define  ADC2PIN          2    // Analog pin 2(digital pin #4)
 #define  ADC3PIN          3    // Analog pin 3(digital pin #3)
+#define  BUTTONPIN        1   // Digital Pin
 
 
-struct cRGB black = {0,0,0};    
-struct cRGB red = {0,255,0};  
 struct cRGB white = {255,255,255};
 
 void initWS2812 ()
 {
-    /* define Pin as configured in ws2812_config.h as LEDstrip Pin 
-     *   DDRB|=_BV(ws2812_pin);*/
-    setStrip(STRIPPIN, 50);
-    setStripColor(black,0);
+    /* define Pin as configured in ws2812_config.h as LEDstrip Pin */
+     //  DDRB|=_BV(ws2812_pin);
+    initStrip(STRIPPIN, 50);
     
 }
 
@@ -48,14 +46,24 @@ int main ()
     
     for (;;)
     {        
-        hue = 180 + (analogRead(ADC1PIN) / 1023.0) * 360;
-        saturation = analogRead(ADC2PIN) / 1023.0;
-        intensity =  1; //analogRead(ADC2Pin)/1023.0;
-        to = round((analogRead(ADC3PIN) / 1023.0) * getStripLength());
         
-        struct cRGB color = hsi2rgb(hue, saturation, intensity);
-        setColor(color, 0, to, 255);    
+        if (digitalRead(BUTTONPIN) == LOW )
+        {
+            setStripColor(white,  255);
+        }
+        else
+        {
+            hue = 180 + (analogRead(ADC1PIN) / 1023.0) * 360;
+            saturation = analogRead(ADC2PIN) / 1023.0;
+            intensity =  1; //analogRead(ADC2Pin)/1023.0;
+            to = round((analogRead(ADC3PIN) / 1023.0) * getStripLength());
+            
+            struct cRGB color = hsi2rgb(hue, saturation, intensity);
+            setColor(color, 0, to, 255);    
+        }
         _delay_ms(100);     
+        
+        
         
     }
 }

@@ -3,36 +3,34 @@
 #include "strip_ws2812.h"
 //#include "light_ws2812.h"
 #include <avr/io.h>
-
-
-#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
-
 #include <math.h>
 
+#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
 
 #define M_PI_3   1.0471975512 /* pi/3 */
 
 struct cStrip strip;
 
-void setStrip(uint8_t pin, uint8_t led_count)
+struct cRGB black = {0,0,0};
+
+void initStrip(uint8_t pin, uint8_t led_count)
 {
     strip.pin = pin;
     strip.led_count = led_count;
-    
-    /* define Pin as configured in ws2812_config.h as LEDstrip Pin */
-    DDRB|=_BV(ws2812_pin);
+    setStripColor(black,0);
 }
 
-void setColor(struct cRGB color, int from, int to, unsigned char brightness) 
+void setColor(struct cRGB color, int from, int to, uint8_t brightness) 
 {
     struct cRGB led[strip.led_count];
+    float scale = brightness/255.0;
     
     for (int i = 0; i <= strip.led_count; i++) {
         if ( i >= from &&  i < to )
         {
-            led[i].r=brightness/255.0 * color.g ;
-            led[i].g=brightness/255.0 * color.r ;
-            led[i].b=brightness/255.0 * color.b ;  
+            led[i].r=(uint8_t)( color.g);
+            led[i].g=(uint8_t)( color.r);
+            led[i].b=(uint8_t)( color.b);  
         }
         else
         {
@@ -41,7 +39,8 @@ void setColor(struct cRGB color, int from, int to, unsigned char brightness)
             led[i].b=0;  
         }
     }
-    ws2812_setleds(led,strip.led_count);
+    //ws2812_setleds(led,strip.led_count);
+    ws2812_setleds_pin(led,strip.led_count,_BV(strip.pin));
 }
 
 

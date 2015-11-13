@@ -10,7 +10,7 @@ struct cRGB hsi2rgb(float H, float S, float I);
 
 struct cStrip { uint8_t pin; uint8_t led_count;};
 
-void setStrip(uint8_t pin, uint8_t led_count);
+void initStrip(uint8_t pin, uint8_t led_count);
 
 uint8_t getStripLength(void);
 
