@@ -1,5 +1,6 @@
 #ifndef F_CPU
 #define F_CPU 8000000L
+#endif
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
