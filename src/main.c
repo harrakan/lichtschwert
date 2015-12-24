@@ -47,7 +47,7 @@ int main ()
     for (;;)
     {        
         
-        if (digitalRead(BUTTONPIN) == LOW )
+        if (digitalRead(BUTTONPIN) == HIGH )
         {
             setStripColor(white,  255);
         }
