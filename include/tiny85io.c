@@ -4,12 +4,6 @@
 #include "tiny85io.h"
 
 
-#define HIGH 0x1
-#define LOW  0x0
-
-#define INPUT 0x0
-#define OUTPUT 0x1
-#define INPUT_PULLUP 0x2
 
 #define BUTTON_PORT PORTB       /* PORTx - register for button output */
 #define BUTTON_PIN PINB         /* PINx - register for button input */
