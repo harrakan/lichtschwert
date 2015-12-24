@@ -5,6 +5,8 @@
 #include "light_ws2812.h"
 
 
+struct cRGB black = {0,0,0};
+struct cRGB white = {255,255,255};
 
 struct cRGB hsi2rgb(float H, float S, float I);
 
