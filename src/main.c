@@ -1,4 +1,5 @@
-//#define F_CPU 8000000L
+#ifndef F_CPU
+#define F_CPU 8000000L
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -28,12 +29,16 @@ void initWS2812 ()
 
 void init() 
 {
-    DDRB  = 0x00; /* alle Pins von Port B als Eingang */
+    //DDRB  = 0x00; /* alle Pins von Port B als Eingang */
     CLKPR=_BV(CLKPCE);
     CLKPR=0;			// set clock prescaler to 1 (attiny 25/45/85/24/44/84/13/13A)    
     
     initWS2812 ();  
     initADC();
+    pinMode(BUTTONPIN,INPUT_PULLUP);
+    pinMode(ADC1PIN,INPUT);
+    pinMode(ADC2PIN,INPUT);
+    pinMode(ADC3PIN,INPUT);
 }
 
 
